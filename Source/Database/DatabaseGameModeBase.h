@@ -1,11 +1,8 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "OpenAPIAuthenticationApi.h"
 #include "GameFramework/GameModeBase.h"
-#include "Interfaces/IHttpRequest.h"
 #include "DatabaseGameModeBase.generated.h"
 
 namespace OpenAPI
@@ -23,11 +20,14 @@ class DATABASE_API ADatabaseGameModeBase : public AGameModeBase
 
 public :
 
-		bool Authenticate();
-
 		OpenAPI::OpenAPIAuthenticationApi* GetAuthenticationApi();
-	
-		void OnRegisterUserResponse(const OpenAPI::OpenAPIAuthenticationApi::RegisterUserPostResponse& Response);
+
+		FGuid RetrieveApiKey();
+		FGuid CreateApiKey();
+
+private :
+
+	FString LocalStorageName = "LocalStorage";
 	
 protected :
 	

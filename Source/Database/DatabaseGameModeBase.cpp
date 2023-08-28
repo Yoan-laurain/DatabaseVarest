@@ -1,42 +1,14 @@
 #include "DatabaseGameModeBase.h"
 #include "OpenAPIAuthenticationApi.h"
-#include "OpenAPIAuthenticationApiOperations.h"
-#include "OpenAPIUserViewModel.h"
-
-bool ADatabaseGameModeBase::Authenticate()
-{
-	OpenAPI::OpenAPIUserViewModel UserViewModel;
-
-	UserViewModel.Email = "yoan.laurain1@gmail.com";
-	UserViewModel.Password = "Tatatutut33!";
-    
-	OpenAPI::OpenAPIAuthenticationApi::FRegisterUserPostDelegate RegisterUserDelegate;
-	RegisterUserDelegate.BindUObject(this, &ADatabaseGameModeBase::OnRegisterUserResponse);
-
-	OpenAPI::OpenAPIAuthenticationApi::RegisterUserPostRequest UserRequest;
-	UserRequest.OpenAPIUserViewModel = UserViewModel;
-
-	FHttpRequestPtr request = GetAuthenticationApi()->RegisterUserPost(UserRequest, RegisterUserDelegate);
-	
-	return true;
-}
-
-void ADatabaseGameModeBase::OnRegisterUserResponse(const OpenAPI::OpenAPIAuthenticationApi::RegisterUserPostResponse& Response)
-{
-	if (Response.IsSuccessful())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("User registered successfully!"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("User registration failed: %s"), *Response.GetResponseString());
-	}
-}
+#include "SaveGameXenoSurge.h"
+#include "Kismet/GameplayStatics.h"
 
 void ADatabaseGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
-	Authenticate();
+	FGuid ApiKey = RetrieveApiKey();
+
+	// TODO : load api key into player 
 }
 
 OpenAPI::OpenAPIAuthenticationApi* ADatabaseGameModeBase::GetAuthenticationApi()
@@ -46,4 +18,31 @@ OpenAPI::OpenAPIAuthenticationApi* ADatabaseGameModeBase::GetAuthenticationApi()
 		AuthenticationApi = new OpenAPI::OpenAPIAuthenticationApi();
 	}
 	return AuthenticationApi;
+}
+
+FGuid ADatabaseGameModeBase::RetrieveApiKey()
+{
+	if ( UGameplayStatics::DoesSaveGameExist(LocalStorageName, 0) )
+	{
+		const USaveGameXenoSurge* SaveGame = static_cast<USaveGameXenoSurge*>(UGameplayStatics::LoadGameFromSlot(LocalStorageName, 0));
+		if (SaveGame != nullptr)
+		{
+			return SaveGame->GetApiKey();
+		}
+	}
+
+	return CreateApiKey();
+}
+
+FGuid ADatabaseGameModeBase::CreateApiKey()
+{
+	USaveGameXenoSurge* SaveGame = static_cast<USaveGameXenoSurge*>(UGameplayStatics::CreateSaveGameObject(USaveGameXenoSurge::StaticClass()));
+	
+	ensure (SaveGame);
+	
+	const FGuid Guid = FGuid::NewGuid();
+	
+	SaveGame->SetApiKey(Guid);
+
+	return Guid;
 }
