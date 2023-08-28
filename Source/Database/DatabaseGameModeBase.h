@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "OpenAPIAuthenticationApi.h"
+#include "OpenAPIInternalApiApiOperations.h"
 #include "GameFramework/GameModeBase.h"
 #include "DatabaseGameModeBase.generated.h"
 
@@ -19,19 +19,16 @@ class DATABASE_API ADatabaseGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 public :
-
-		OpenAPI::OpenAPIAuthenticationApi* GetAuthenticationApi();
-
+	
 		FGuid RetrieveApiKey();
 		FGuid CreateApiKey();
 
 private :
 
 	FString LocalStorageName = "LocalStorage";
+	FString ApiKeyHeaderName = "X-Api-Key";
 	
 protected :
-	
-	OpenAPI::OpenAPIAuthenticationApi* AuthenticationApi;
-	
+	void OnRegisterUserResponse(const OpenAPI::OpenAPIInternalApiApi::ObjectRecoltedPostResponse& ObjectRecoltedPostResponse);
 	virtual void BeginPlay() override;
 };

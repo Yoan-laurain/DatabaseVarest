@@ -10,9 +10,9 @@
  * Do not edit the class manually.
  */
 
-#include "../Public/OpenAPIInternalApiApi.h"
+#include "OpenAPIInternalApiApi.h"
 
-#include "../Public/OpenAPIInternalApiApiOperations.h"
+#include "OpenAPIInternalApiApiOperations.h"
 #include "OpenAPIModule.h"
 
 #include "HttpModule.h"
@@ -22,7 +22,7 @@ namespace OpenAPI
 {
 
 OpenAPIInternalApiApi::OpenAPIInternalApiApi()
-: Url(TEXT("http://localhost"))
+: Url(TEXT("https://localhost:7024"))
 {
 }
 

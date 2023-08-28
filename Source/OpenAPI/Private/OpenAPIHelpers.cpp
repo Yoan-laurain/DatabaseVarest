@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-#include "../Public/OpenAPIHelpers.h"
+#include "OpenAPIHelpers.h"
 
 #include "OpenAPIModule.h"
 

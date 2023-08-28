@@ -1,23 +1,35 @@
 #include "DatabaseGameModeBase.h"
-#include "OpenAPIAuthenticationApi.h"
+
+#include "OpenAPIInternalApiApi.h"
+#include "OpenAPIInternalApiApiOperations.h"
 #include "SaveGameXenoSurge.h"
 #include "Kismet/GameplayStatics.h"
+
+
 
 void ADatabaseGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
-	FGuid ApiKey = RetrieveApiKey();
 
 	// TODO : load api key into player 
+	FGuid ApiKey = RetrieveApiKey();
+
+	OpenAPI::OpenAPIInternalApiApi Api;
+
+	const OpenAPI::OpenAPIInternalApiApi::ObjectRecoltedPostRequest Request;
+	OpenAPI::OpenAPIInternalApiApi::FObjectRecoltedPostDelegate Delegate;
+
+	Delegate.BindUObject(this, &ADatabaseGameModeBase::OnRegisterUserResponse);
+	
+	Api.AddHeaderParam(ApiKeyHeaderName, ApiKey.ToString());
+	
+	FHttpRequestPtr Result = Api.ObjectRecoltedPost(Request,Delegate);
 }
 
-OpenAPI::OpenAPIAuthenticationApi* ADatabaseGameModeBase::GetAuthenticationApi()
+void ADatabaseGameModeBase::OnRegisterUserResponse(
+	const OpenAPI::OpenAPIInternalApiApi::ObjectRecoltedPostResponse& ObjectRecoltedPostResponse)
 {
-	if (AuthenticationApi == nullptr)
-	{
-		AuthenticationApi = new OpenAPI::OpenAPIAuthenticationApi();
-	}
-	return AuthenticationApi;
+	UE_LOG(LogTemp, Warning, TEXT("OnRegisterUserResponse"));
 }
 
 FGuid ADatabaseGameModeBase::RetrieveApiKey()
@@ -43,6 +55,8 @@ FGuid ADatabaseGameModeBase::CreateApiKey()
 	const FGuid Guid = FGuid::NewGuid();
 	
 	SaveGame->SetApiKey(Guid);
+
+	UGameplayStatics::SaveGameToSlot(SaveGame, LocalStorageName, 0);
 
 	return Guid;
 }

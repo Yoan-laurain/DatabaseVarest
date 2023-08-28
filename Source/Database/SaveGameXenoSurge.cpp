@@ -1,6 +1,6 @@
 ﻿#include "SaveGameXenoSurge.h"
 
-void USaveGameXenoSurge::SetApiKey(FGuid ApiKey)
+void USaveGameXenoSurge::SetApiKey(FGuid NewApiKey)
 {
-	this->ApiKey = ApiKey;
+	this->ApiKey = NewApiKey;
 }

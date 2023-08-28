@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-#include "../Public/OpenAPIBaseModel.h"
+#include "OpenAPIBaseModel.h"
 
 namespace OpenAPI
 {

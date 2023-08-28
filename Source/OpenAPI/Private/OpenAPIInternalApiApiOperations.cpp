@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-#include "../Public/OpenAPIInternalApiApiOperations.h"
+#include "OpenAPIInternalApiApiOperations.h"
 
 #include "OpenAPIModule.h"
-#include "../Public/OpenAPIHelpers.h"
+#include "OpenAPIHelpers.h"
 
 #include "Dom/JsonObject.h"
 #include "Templates/SharedPointer.h"

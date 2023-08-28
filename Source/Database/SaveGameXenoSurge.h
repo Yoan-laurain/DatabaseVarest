@@ -14,7 +14,6 @@ public:
 	void SetApiKey(FGuid ApiKey);
 
 private :
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CustomAttributes")
+	
 	FGuid ApiKey;
 };
